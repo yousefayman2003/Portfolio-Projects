@@ -1,0 +1,50 @@
+{% extends "main/base.html" %}
+{% load crispy_forms_tags %}
+{% load static %}
+{% block title %}Home Page{% endblock %}
+{% block head %}
+{% endblock %}
+{% block content %}
+<div class="container">
+  <div class="row mt-5 pt-5">
+    <div class="col-md-4">
+      <div class="card my-3 shadow">
+        <div class="card-body">
+          <form method="post">
+            {% csrf_token %}
+            {{form|crispy}}
+            <div class="d-grid gap-2">
+              <input class="btn btn-primary btn-block" type="submit" value="Post">
+            </div>
+          </form>
+        </div>
+      </div>
+
+    </div>
+    <div class="col-md-8">
+      {% for post in posts %}
+      <div class="card shadow my-3">
+        <div class="card-body">
+          <div class="row">
+            <div class="col-md-2">
+              <img class="img-thumbnail" height="150px" width="150px" src="{{post.created_by.image.url}}" alt="img">
+            </div>
+            <div class="col-md-8">
+              <div class="row">
+                <div class="col-sm-6"><strong>@{{post.created_by.first_name}} {{post.created_by.last_name}}</strong></div>
+                <div class="col-sm-6">{{post.date_created}}</div>
+              </div>
+              <hr>
+              <a class="h3" href="/post_detail/{{post.id}}">{{post.title}}</a>
+              <p class="text-justify my-3">
+                {{post.content}}
+              </p>
+            </div>
+          </div>
+        </div>
+      </div>
+      {% endfor %}
+    </div>
+  </div>
+</div>
+{% endblock %} 
