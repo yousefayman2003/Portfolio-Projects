@@ -64,6 +64,10 @@ The data was queried to gain a deeper understanding of the data.
 
 Maps were created using Folium to visualize launch sites, view launch outcomes, and see distances to proximities.
 
+### Dashboard with dash
+
+Created an interactive dashboard application with dash to see which features effects the success rate
+
 ## Predictive Analysis
 
 To predict whether SpaceX will reuse the first stage, the following steps were taken:
