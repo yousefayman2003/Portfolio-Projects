@@ -8,8 +8,8 @@
 #include <addons/RTDBHelper.h>
 #include <time.h>
 
-#define WIFI_SSID "Abo Elmakarem"
-#define WIFI_PASSWORD "Hanan1980"
+#define WIFI_SSID ""
+#define WIFI_PASSWORD ""
 
 #define API_KEY "AIzaSyAzkKax2O0i-2b2r8U13HjayCipQmChB3E"
 #define DATABASE_URL "https://esp-firebase-641b5-default-rtdb.firebaseio.com/"
