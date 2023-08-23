@@ -1,65 +1,84 @@
  // Used modules
 #include <ESP32Servo.h>
 #include <Keypad.h>
-//#include <LiquidCrystal_I2C.h>
+#include <LiquidCrystal_I2C.h>
 #include <WiFi.h>
-#include <Firebase_ESP_Client.h>
+#include <FirebaseESP32.h>
 #include <addons/TokenHelper.h>
 #include <addons/RTDBHelper.h>
 #include <time.h>
 
-#define WIFI_SSID ""
-#define WIFI_PASSWORD ""
-
+#define WIFI_SSID "mywifi"
+#define WIFI_PASSWORD "m123598"
 #define API_KEY "AIzaSyAzkKax2O0i-2b2r8U13HjayCipQmChB3E"
 #define DATABASE_URL "https://esp-firebase-641b5-default-rtdb.firebaseio.com/"
 
 #define USER_EMAIL "test@gmail.com"
 #define USER_PASSWORD "123456"
 
-#define TIME_DELAY 100
-
-#define PARENT_PATH "sensor"
-
+FirebaseData stream;
 FirebaseData fbdo;
 FirebaseAuth auth;
 FirebaseConfig config;
+
+
+// Firebase paths
+const String PARENT_PATH = "reading/";
+const String INVALID_PASSWORD_PATH = "emergency/invalid_password";
+const String THEIF_PATH = "emergency/theif";
+const String SERVO_PATH = "utils/door";
+const String LED_PATH = "utils/led";
+String LDR_PATH;
+String GAS_PATH;
+String FLAME_PATH;
+String ULTRASONIC_PATH;
+String PIR_PATH;
 
 // variables
 const char* ntpServer = "pool.ntp.org";
 unsigned long sendDataPrevMillis = 0;
 int timestamp;
 bool ultrasonicValue = false;
-bool fireValue = false;
+//bool fireValue = false;
 bool pirValue = false;
 int ldrValue;
 int gasValue;
+bool invalidPassword = false;
+char key;
+bool initial = true;
+bool ledCheck = false;
+bool doorOpened = false;
+bool motionDectected = false;
 
 // Function Declartion
 unsigned long getTime();
 void writeDataInt(String path, int data);
-void writeDataFloat(String path, float data);
-int readDataInt(String path);
-float readDataFloat(String path);
-void deleteData(String path);
+void writeDataBool(String path, bool data);
 void initWiFi();
 void setPinsMode();
 bool valid_password();
 bool is_there_someone();
 void emergency();
+void streamCallback(StreamData data);
+void streamTimeoutCallback(bool timeout);
+void handleStream(String path, bool value);
+void theif();
 
 // Used variables
-byte pir_pin = 34;
-byte flame_pin = 5;
+const byte pir_pin = 34;
+const byte flame_pin = 5;
 const byte rows = 4;
 const byte cols = 4;
-byte gas_pin = 35;
-byte echo_pin = 23, trig_pin = 18;
-byte motor_pin = 15;
-byte leds_pin = 19;
-byte ldr_pin = 2;
-char password[] = "2382023";
-byte row_pins[] = {13, 12, 14, 27}, col_pins[] = {26, 25, 33, 32};
+const byte gas_pin = 35;
+const byte echo_pin = 23, trig_pin = 18;
+const byte motor_pin = 15;
+const byte leds_pin = 19;
+const byte doorLedPin = 16;
+const byte ldr_pin = 4;
+const byte buzzer_pin1 = 2, buzzer_pin2 = 17;
+
+const String password = "123";
+byte row_pins[] = {32, 33, 25, 26}, col_pins[] = {27, 14, 12, 13};
 char keys[4][4] = {
   {'1', '2', '3', 'A'},
   {'4', '5', '6', 'B'},
@@ -68,16 +87,18 @@ char keys[4][4] = {
 };
 
 // Objects
-//LiquidCrystal_I2C lcd(0x27, 16, 2);
+LiquidCrystal_I2C lcd(0x27, 16, 2);
 Keypad keypad = Keypad(makeKeymap(keys), row_pins, col_pins, rows, cols);
 Servo motor;
 
 void setup() {
     Serial.begin(115200);
+    
     setPinsMode();
-//  lcd.init();
-//  lcd.backlight();
-//  lcd.print("The home is safe");
+
+    //Initialzing LCD
+    lcd.init();
+    lcd.backlight();
 
     // Connecting to WiFi
     initWiFi();
@@ -91,6 +112,7 @@ void setup() {
     config.database_url = DATABASE_URL;
     // Assign the callback function for the long running token generation task 
     config.token_status_callback = tokenStatusCallback;
+    config.max_token_generation_retry = 5;
   
     // Assign the user sign in credentials 
     auth.user.email = USER_EMAIL;
@@ -99,115 +121,201 @@ void setup() {
     // Connecting to FireBase
     Firebase.begin(&config, &auth);
     Firebase.reconnectWiFi(true);
-}
+    //Set the size of HTTP responses buffers to work with large amount of data
+    stream.setResponseSize(1024);
+      
 
-void loop() {
-    // The smart door with keypad and ultrasonic authentication 
-    if (Firebase.ready() && millis() - sendDataPrevMillis > TIME_DELAY || sendDataPrevMillis == 0)
+    //Using TCP KeepAlive For more reliable stream operation and tracking the server connection status
+    stream.keepAlive(5, 5, 1);
+    if (!Firebase.beginStream(stream, "utils/"))
     {
-  
-        // Serial.println("----------------Successfully connected to FireBase---------------");
-        // sending data rate millis value
-        sendDataPrevMillis = millis();
-  
-        ldrValue = analogRead(ldr_pin);
-        gasValue = analogRead(gas_pin);
-        ultrasonicValue = is_there_someone();
-        fireValue = digitalRead(flame_pin);
-        pirValue = digitalRead(pir_pin);
-        
-        
-        
-        Serial.println("Is there someone " + String(is_there_someone()));
-        Serial.println("LDR value: " + String(ldrValue));
-        Serial.println("GAS value: " + String(gasValue));
-        Serial.println("Flame value: " + String(fireValue));
-        Serial.println("PIR value: " + String(ultrasonicValue));
-        Serial.println("Flame value: " + String(pirValue));
-        
-        // Writing to RTDB
-        writeDataInt(String(PARENT_PATH)+ String("/ldr"), ldrValue);
-        writeDataInt(String(PARENT_PATH)+ String("/gas"), gasValue);
-        writeDataBool(String(PARENT_PATH)+ String("/fire"), fireValue);
-        writeDataBool(String(PARENT_PATH)+ String("/ultrasonic"), ultrasonicValue);
-        writeDataBool(String(PARENT_PATH)+ String("/pir"), pirValue);
-    
-              
+      // Could not begin stream connection, then print out the error detail
+      Serial.println(stream.errorReason());
     }
-
-       
-         
-//  if (is_there_someone())
-//  {
-//    if (keypad.getKey() == '#')
-//    {
-//      lcd.clear();
-//      lcd.print("Enter Your Password");
-//      Serial.println("Enter Your Password");
-//      if (valid_password())
-//        {
-//          lcd.clear();
-//          lcd.print("Correct Password");
-//          Serial.print("Correct Password");
-//          motor.write(180);
-//          delay(3000);
-//          motor.write(0);
-//        }
-//      else
-//      {
-//        lcd.clear();
-//        lcd.print("Wrong Password");
-//        Serial.println("Wrong Password");
-//        delay(1000);
-//      }
-//      lcd.clear();
-//      lcd.print("The home is safe");
-//      Serial.println("The home is safe");
-//    }
-//  }
-//
-//  
-//
-//  // Control home lighting using PIR sensor and LDR sensor 
-//  if (analogRead(ldr_pin) < 2000 || digitalRead(pir_pin))
-//    digitalWrite(leds_pin, HIGH);
-//  else
-//    digitalWrite(leds_pin, LOW);
-//
-//   
-//  // Declare an emergency when there is a fire or gas leak
-//  if (analogRead(gas_pin) > 1200 || analogRead(flame_pin < 3000))
-//  {
-//    emergency();
-//  }
-  
+    Firebase.RTDB.setStreamCallback(&stream, streamCallback, streamTimeoutCallback);
 }
+
+
+void loop()
+{
+//  LDR_PATH = "sensor/ldr";
+  GAS_PATH = "sensor/gas";
+//  FLAME_PATH = "sensor/flame";
+  ULTRASONIC_PATH = "sensor/ultrasonic";
+  PIR_PATH = "sensor/pir";
+
+
+  if (Firebase.ready())
+  {
+          
+      // Getting sensors readings from esp32
+      gasValue = analogRead(gas_pin);
+      ultrasonicValue = is_there_someone();
+//      fireValue = digitalRead(flame_pin);
+      pirValue = digitalRead(pir_pin);
+//      ldrValue = analogRead(ldr_pin);
+      
+  
+      // Getting current timestamp
+      timestamp = getTime();
+  
+      // Setting new PATH
+//      LDR_PATH = PARENT_PATH + String(timestamp) + "/" + LDR_PATH;
+      GAS_PATH = PARENT_PATH + String(timestamp) + "/"  + GAS_PATH;
+//      FLAME_PATH = PARENT_PATH + String(timestamp) + "/"  + FLAME_PATH;
+      ULTRASONIC_PATH = PARENT_PATH + String(timestamp) + "/"  + ULTRASONIC_PATH;
+      PIR_PATH = PARENT_PATH + String(timestamp) + "/"  + PIR_PATH;
+   
+          
+      // Writing to RTDB
+//      writeDataInt(LDR_PATH, ldrValue);
+      writeDataInt(GAS_PATH, gasValue);
+//      writeDataBool(FLAME_PATH, fireValue);
+      writeDataBool(ULTRASONIC_PATH, ultrasonicValue);
+      writeDataBool(PIR_PATH, pirValue);
+      if (initial)
+      {
+        writeDataBool(LED_PATH, false);
+        writeDataBool(SERVO_PATH,  false);
+        initial = false;
+      }
+      Serial.println("\n");    
+      // Checks if someone entered the house without unlocking the door properly i.e theif
+      if (pirValue == HIGH && !doorOpened)
+      {
+          writeDataBool(THEIF_PATH, true);
+          theif();
+      }
+      else
+      {
+          writeDataBool(THEIF_PATH, false);
+      }
+    
+      // The smart door with keypad and ultrasonic authentication      
+      if (is_there_someone())
+      {
+        digitalWrite(doorLedPin, HIGH);
+        Serial.println("PRESS # TO ENTER PASSWORD: ");
+        lcd.setCursor(0, 0);
+        lcd.print("PRESS # TO ENTER");
+        lcd.setCursor(0,1);
+        lcd.print("YOUR PASSWORD: ");
+        key = keypad.getKey();
+
+        if (key == '#')
+        {
+          lcd.clear();
+          lcd.print("Enter Password: ");
+          Serial.println("Enter Your Password: ");
+          if (valid_password())
+            {
+              lcd.clear();
+              lcd.print("Correct Password");
+              delay(250);
+              Serial.println("Correct Password");
+              motor.write(90);
+              delay(3000);
+              motor.write(0);
+              invalidPassword = false;
+              writeDataBool(INVALID_PASSWORD_PATH, invalidPassword);
+              lcd.print("WELCOME HOME :)");
+              delay(1000);
+              lcd.clear();
+              doorOpened = true;
+            }
+          else
+          {
+            lcd.clear();
+            lcd.print("Wrong Password");
+            Serial.println("Wrong Password!!");
+            invalidPassword = true;
+            writeDataBool(INVALID_PASSWORD_PATH, invalidPassword); 
+            doorOpened = false;
+            delay(500);
+          
+          } 
+        }
+      }
+      else
+      {
+        digitalWrite(doorLedPin, LOW);
+        lcd.clear();
+      }
+                  
+      // Control home lighting using PIR sensor and LDR sensor 
+      if (pirValue  == HIGH)
+      {
+        digitalWrite(leds_pin, HIGH); 
+      }
+      else
+      {
+         if (!ledCheck)
+            digitalWrite(leds_pin, LOW); 
+      }
+        
+       
+       //Declare an emergency when there is a fire or gas leak
+      if (gasValue > 1200)
+          emergency();   
+  }
+}
+
+/**
+ * theif - turn on the buzzer and turn on and off the leds when someone breaks into the house
+ * 
+ * Return: NULL
+ */
+void theif()
+{
+   lcd.clear();
+   Serial.println("THEIF!!");
+   lcd.println("THEIF");
+   while (digitalRead(pir_pin))
+   {
+      digitalWrite(leds_pin, HIGH);
+      tone(buzzer_pin1, 100);
+      tone(buzzer_pin2, 100);
+      delay(100);
+      digitalWrite(leds_pin, LOW);
+      noTone(buzzer_pin1);
+      noTone(buzzer_pin2);
+      delay(100);
+   }
+   lcd.clear();
+   lcd.print("THE HOME IS SAFE");
+   delay(500);
+ }
+
 
 
 
 /**
  * Description: emergency- turn on the buzzer and turn off the lamps when fire or gas is detected
- * Input:
- *      buzzer_pin[byte]: location of buzzer pin in esp32
- *      leds_pin[byte]: location of leds pins in esp32
+ * 
  * Return: NULL
  */
-// void emergency()
-// {
-//   lcd.clear();
-//   lcd.print("Emergency");
-//   digitalWrite(leds_pin, LOW);
-//   while (analogRead(gas_pin) > 1200 || analogRead(flame_pin < 3000))
-//   {
-//      tone(buzzer_pin, 100);
-//      delay(100);
-//      noTone(buzzer_pin);
-//   }
-//   lcd.clear();
-//   lcd.print("The Home is safe");
-// }
-
-
+ void emergency()
+ {
+   lcd.clear();
+   Serial.println("EMERGENY");
+   lcd.println("EMERGENY");
+   while (analogRead(gas_pin) > 1200)
+   {
+      Serial.printf("GAS = %d\n", analogRead(gas_pin) > 1200);
+      digitalWrite(leds_pin, HIGH);
+      tone(buzzer_pin1, 100);
+      tone(buzzer_pin2, 100);
+      delay(100);
+      digitalWrite(leds_pin, LOW);
+      noTone(buzzer_pin1);
+      noTone(buzzer_pin2);
+      delay(100);
+      
+   }
+   lcd.clear();
+   lcd.print("THE HOME IS SAFE");
+   delay(500);
+ }
 
 /**
  * Description: vaild_password - cheack the entered password by user
@@ -216,31 +324,33 @@ void loop() {
  *      true if the entered password is correct 
  *      false otherwise
  */
-//bool valid_password()
-//{
-//  byte i = 0;
-//  bool condition = true;
-//  char key;
-//  
-//  // take the password from the user
-//  while(1)
-//  {
-//    key = keypad.getKey();
-//    if (key)
-//    {
-//      // display the entered keys password
-//      lcd.setCursor(i, 1);
-//      lcd.print(key); 
-//      Serial.print(key);
-//      if (key == '#' or i == 16)
-//        break;
-//      else if (i >= strlen(password) || key != password[i])
-//        condition = false;
-//      i++;
-//    }
-//  }
-//  return condition;
-//}
+bool valid_password()
+{
+  byte i = 0;
+  char key;
+  String pass = "";
+  
+  // take the password from the user
+  while(1)
+  {
+    key = keypad.getKey();
+    
+    if (key)
+    {
+      // display the entered keys password
+      lcd.setCursor(i, 1);
+      lcd.print(key);   
+      Serial.print(key);
+      if (key == '#' or i == 16)
+        break;
+      if (key != password[i])
+        break;
+      i++;
+      pass += key;
+    }
+  }
+  return (pass == password);
+}
 
 
 /**
@@ -266,7 +376,8 @@ bool is_there_someone()
   // Calculate the distance in centimeters
   int distance = duration * 0.034 / 2;
 
-  if (distance <= 10)
+  if (distance <= 50
+  )
     return true;
   else
     return false;
@@ -279,12 +390,15 @@ bool is_there_someone()
 */
 void setPinsMode()
 {
+//  pinMode(ldr_pin, INPUT);
   pinMode(echo_pin, INPUT);
   pinMode(trig_pin, OUTPUT);
-  pinMode(ldr_pin, INPUT);
   pinMode(gas_pin, INPUT);
-  pinMode(flame_pin, INPUT);
   pinMode(pir_pin, INPUT);  
+  pinMode(leds_pin, OUTPUT);
+  pinMode(doorLedPin, OUTPUT);
+  pinMode(buzzer_pin1, OUTPUT);
+  pinMode(buzzer_pin2, OUTPUT);
   motor.attach(motor_pin);
 }
 
@@ -304,16 +418,6 @@ unsigned long getTime() {
   return now;
 }
 
-/*
- void setLocalTime() {
-  struct tm timeinfo;
-  if (!getLocalTime(&timeinfo)) {
-    Serial.println("No time available (yet)");
-    return;
-  }
-  Serial.println(&timeinfo, "%A, %B %d %Y %H:%M:%S");
-*/
-
 /**
  * writeDataInt - Writes data of type int to firebase
  * 
@@ -330,12 +434,12 @@ void writeDataInt(String path, int data)
   // Writing to RTDB
   if (Firebase.RTDB.setIntAsync(&fbdo, path, data))
   {
-    Serial.printf("%i - SuccessFully Saved to : %s (%s) at %i\n", data, fbdo.dataPath().c_str(), fbdo.dataType(), timestamp);          
+    Serial.printf("%i - SuccessFully Saved to : %s\n", data, fbdo.dataPath().c_str());          
   }
   // if writing fails
   else
   {
-    Serial.println("FAILED TO WRITE: " + fbdo.errorReason());  
+    Serial.println("FAILED TO WRITE: " + String(fbdo.errorReason().c_str()));  
   }
 }
 
@@ -355,77 +459,12 @@ void writeDataBool(String path, bool data)
   // Writing to RTDB
   if (Firebase.RTDB.setBoolAsync(&fbdo, path, data))
   {
-    Serial.printf("%i - SuccessFully Saved to : %s (%s) at %i\n", data, fbdo.dataPath(), fbdo.dataType(), timestamp);          
+    Serial.printf("%i - SuccessFully Saved to : %s\n", data, fbdo.dataPath().c_str());          
   }
   // if writing fails
   else
   {
-    Serial.println("FAILED TO WRITE: " + fbdo.errorReason());  
-  }
-}
-
-/**
- * readDataInt - Reads data of type int from firebase
- * 
- * @path [String]: database path to read data from
- * 
- * Return: data
-*/
-int readDataInt(String path)
-{
-    // storing the value of the data
-    int value;
-    // Reading from RTDB
-    if (Firebase.RTDB.getInt(&fbdo, path))
-    {
-      value = fbdo.intData();
-      Serial.println("Successfull READ from " + fbdo.dataPath() + ": " + value + "(" + fbdo.dataType() + ")");
-    }
-    // if failed to read
-    else
-    {
-      Serial.println("FAILED TO READ: " + fbdo.errorReason());   
-    } 
-    return (value);
-}
-
-/**
- * readDataBool - Reads data of type boolean from firebase
- * 
- * @path [String]: database path to read data from
- * 
- * Return: data
-*/
-float readDataFloat(String path)
-{
-    // storing the value of the data
-    float value;
-    // Reading from RTDB
-    if (Firebase.RTDB.getFloat(&fbdo, path))
-    {
-      value = fbdo.boolData();
-      Serial.println("Successfull READ from " + fbdo.dataPath() + ": " + value + "(" + fbdo.dataType() + ")");
-    }
-    // if failed to read
-    else
-    {
-      Serial.println("FAILED TO READ: " + fbdo.errorReason());   
-    } 
-
-    return (value);
-}
-
-/**
- * deleteData - Deletes data from a specific path
- * 
- * Return: NULL
-*/
-void deleteData(String path)
-{
-    if (Firebase.RTDB.deleteNode(&fbdo, path)) {
-    Serial.println("Data deleted successfully! at " + fbdo.dataPath());
-  } else {
-    Serial.println("Failed to delete data from " + fbdo.dataPath() + "  at Firebase RTDB!");
+    Serial.println("FAILED TO WRITE: " + String(fbdo.errorReason().c_str()));  
   }
 }
 
@@ -445,4 +484,79 @@ void initWiFi()
   }
   Serial.println();
   Serial.printf("Connected with IP: %s\n\n", String(WiFi.localIP()));
+}
+
+
+ /**
+ * streamCallback - Global function that handles stream data
+ * 
+ * @data [StreamData]: Updated data from firebase
+ * 
+ * Return: NULL
+*/
+void streamCallback(StreamData data)
+{
+  bool value;
+  // Getting data value
+  value = data.boolData();
+  // Print out all information
+  Serial.println("Stream Data...");
+  Serial.printf("stream path, %s\nevent path, %s\ndata type, %s\nevent type, %s\n\n",
+                data.streamPath().c_str(),
+                data.dataPath().c_str(),
+                data.dataType().c_str(),
+                data.eventType().c_str());
+  handleStream(data.dataPath().c_str(), value);
+}
+
+
+/**
+ * streamTimeoutCallback - Global function that notifies when stream connection lost
+ * 
+ * @timeout [bool]: if connection timeout
+ * 
+ * Return: NULL
+*/
+void streamTimeoutCallback(bool timeout)
+{
+  if (timeout)
+    Serial.println("stream timed out, resuming...\n");
+
+  if (!stream.httpConnected())
+    Serial.printf("error code: %d, reason: %s\n\n", stream.httpCode(), stream.errorReason().c_str());
+}
+
+/**
+ * handleStream - Makes an action depending on the reading from firebase
+ * 
+ * @path [String]: path where data changed in firebase
+ * 
+ * @value [bool]: New value
+ * 
+ * Return: NULL
+*/
+void handleStream(String path, bool value)
+{
+    
+    if (path == "/led")
+    {
+      if (value == true)
+      {
+          digitalWrite(leds_pin, HIGH);
+          ledCheck = true;
+      }
+      else
+      {
+        digitalWrite(leds_pin, LOW);
+        ledCheck = false;
+      }
+        
+    }     
+    else if (path == "/door")
+    {
+      if (value == true)
+        motor.write(90);
+      else
+        motor.write(0);
+    }        
 }
