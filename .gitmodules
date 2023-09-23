@@ -1,3 +1,6 @@
 [submodule "Software-Engineering/Software-Engineering/SMART-HOME"]
 	path = Software-Engineering/Software-Engineering/SMART-HOME
 	url = https://github.com/yousefayman2003/SMART-HOME.git
+[submodule "Software-Engineering/SMART-HOME"]
+	path = Software-Engineering/SMART-HOME
+	url = https://github.com/yousefayman2003/SMART-HOME.git
