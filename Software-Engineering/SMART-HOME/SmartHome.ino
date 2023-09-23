@@ -7,14 +7,15 @@
 #include <addons/TokenHelper.h>
 #include <addons/RTDBHelper.h>
 #include <time.h>
+//#include "creds.h"
 
-#define WIFI_SSID "mywifi"
-#define WIFI_PASSWORD "m123598"
-#define API_KEY "AIzaSyAzkKax2O0i-2b2r8U13HjayCipQmChB3E"
-#define DATABASE_URL "https://esp-firebase-641b5-default-rtdb.firebaseio.com/"
+#define WIFI_SSID "*******"
+#define WIFI_PASSWORD "*******"
+#define API_KEY "***********"
+#define DATABASE_URL "*********"
 
-#define USER_EMAIL "test@gmail.com"
-#define USER_PASSWORD "123456"
+#define USER_EMAIL "******"
+#define USER_PASSWORD "*****"
 
 FirebaseData stream;
 FirebaseData fbdo;
@@ -36,9 +37,10 @@ String PIR_PATH;
 
 // variables
 const char* ntpServer = "pool.ntp.org";
+unsigned long sendDataPrevMillis = 0;
 int timestamp;
 bool ultrasonicValue = false;
-//bool fireValue = false;
+bool fireValue = false;
 bool pirValue = false;
 int ldrValue;
 int gasValue;
@@ -210,15 +212,13 @@ void loop()
             {
               lcd.clear();
               lcd.print("Correct Password");
-              delay(250);
-              Serial.println("Correct Password");
               motor.write(90);
-              delay(3000);
+              delay(1000);
+              lcd.clear();
+              lcd.print("WELCOME HOME :)");
               motor.write(0);
               invalidPassword = false;
               writeDataBool(INVALID_PASSWORD_PATH, invalidPassword);
-              lcd.print("WELCOME HOME :)");
-              delay(1000);
               lcd.clear();
               doorOpened = true;
             }
@@ -361,7 +361,7 @@ bool valid_password()
  */
 bool is_there_someone()
 {
-  // The sensor is triggered by a HIGH pulse of 10 or more microseconds.
+  // The sensor is triggered by a HIGH pulse of 35 or more microseconds.
   // Give a short LOW pulse beforehand to ensure a clean HIGH pulse
   digitalWrite(trig_pin, LOW);
   delay(2);
@@ -375,8 +375,7 @@ bool is_there_someone()
   // Calculate the distance in centimeters
   int distance = duration * 0.034 / 2;
 
-  if (distance <= 50
-  )
+  if (distance <= 35)
     return true;
   else
     return false;
