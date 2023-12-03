@@ -6,6 +6,7 @@
 - [Project Scenario](#project_scenario)
 - [Project Stages](#project_stages)
   - [Project Proposal](#project_proposal)
+  - [Understand The Data](#understand_the_data)
 
 <a id="introduction"></a>
 
@@ -53,3 +54,29 @@ In the first stage of the project I received emails from Mr.Rosie Mae Bradshaw a
 - The analyzing stage is where we will collect, prepare, and analyze all of the data for your project.
 - The construction stage is where we will build models that will allow us access to hidden relationships locked within data.
 - The execution stage is where we will present the findings of our analysis, receive feedback, and make revisions as necessary.
+
+<a id="understand_the_data"></a>
+
+## Understand The Data ([Click Here](https://github.com/yousefayman2003/Portfolio-Projects/tree/main/Data-Science/TikTok/understand_the_data))
+
+This stage aims to investigate and understand the data provided, construct a data frame in Python, perform a cursory inspection of the provided dataset, and inform TikTok data team members of your findings.
+
+### Approach
+
+**Part 1:** Understand the situation
+
+- Prepare to understand and organize the dataset and information by reviewing data dictionary.
+
+**Part 2:** Understand the data
+
+- Create a pandas dataframe for data learning and future exploratory data analysis (EDA) and statistical activities
+
+- Compile summary information about the data to inform next steps
+
+**Part 3:** Understand the variables
+
+- Use insights from your examination of the summary data to guide deeper investigation into variables
+
+**Part 4:** Share results
+
+- Share an executive summary with my team
