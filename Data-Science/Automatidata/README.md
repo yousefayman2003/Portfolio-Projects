@@ -7,6 +7,7 @@
 - [Project Stages](#project_stages)
   - [Project Proposal](#project_proposal)
   - [Understand The Data](#understand_the_data)
+  - [Exploratory Data Analysis](#eda)
 
 <a id="introduction"></a>
 
@@ -93,3 +94,16 @@ In the second stage of the project I will examine data provided and prepare it f
 **Part 4:** Share results
 
 - Share an executive summary with my team
+
+<a id="eda"></a>
+
+## Exploratory Data Analysis ([Click Here](https://github.com/yousefayman2003/Portfolio-Projects/tree/main/Data-Science/Automatidata/EDA))
+
+In this stage, The purpose is to conduct exploratory data analysis on a provided data set.
+
+### Approach
+
+1. Imports, links, and loading
+2. Data Exploration and Cleaning
+3. Data Visualization
+4. Results and Evaluation

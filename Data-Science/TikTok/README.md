@@ -7,6 +7,7 @@
 - [Project Stages](#project_stages)
   - [Project Proposal](#project_proposal)
   - [Understand The Data](#understand_the_data)
+  - [Exploratory Data Analysis](#eda)
 
 <a id="introduction"></a>
 
@@ -80,3 +81,16 @@ This stage aims to investigate and understand the data provided, construct a dat
 **Part 4:** Share results
 
 - Share an executive summary with my team
+
+<a id="eda"></a>
+
+## Exploratory Data Analysis ([Click Here](https://github.com/yousefayman2003/Portfolio-Projects/tree/main/Data-Science/TikTok/EDA))
+
+In this stage, I will conduct exploratory data analysis on data for the claims classification project.
+
+### Approach
+
+1. Imports, links, and loading
+2. Data Exploration and Cleaning
+3. Data Visualization
+4. Results and Evaluation
