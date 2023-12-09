@@ -8,6 +8,7 @@
   - [Project Proposal](#project_proposal)
   - [Understand The Data](#understand_the_data)
   - [Exploratory Data Analysis](#eda)
+  - [Hypothesis Testing](#stats)
 
 <a id="introduction"></a>
 
@@ -105,4 +106,16 @@ In this stage, The purpose is to conduct exploratory data analysis on a provided
 1. Imports, links, and loading
 2. Data Exploration and Cleaning
 3. Data Visualization
+4. Results and Evaluation
+
+## Hypothesis Testing ([Click Here](https://github.com/yousefayman2003/Portfolio-Projects/tree/main/Data-Science/Waze/hypothesis_testing))
+
+In this stage, The purpose is to demostrate knowledge of how to prepare, create, and analyze hypothesis tests and to answer the research question
+"Do drivers who open the application using an iPhone have the same number of drives on average as drivers who use Android devices".
+
+### Approach
+
+1. Imports and data loading
+2. Conduct EDA and hypothesis testing
+3. Communicate insights with stakeholders
 4. Results and Evaluation

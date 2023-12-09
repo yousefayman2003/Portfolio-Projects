@@ -8,6 +8,7 @@
   - [Project Proposal](#project_proposal)
   - [Understand The Data](#understand_the_data)
   - [Exploratory Data Analysis](#eda)
+  - [Hypothesis Testing](#stats)
 
 <a id="introduction"></a>
 
@@ -106,4 +107,17 @@ In this stage, The purpose is to conduct exploratory data analysis on a provided
 1. Imports, links, and loading
 2. Data Exploration and Cleaning
 3. Data Visualization
+4. Results and Evaluation
+
+<a id="stats"></a>
+
+## Hypothesis Testing ([Click Here](https://github.com/yousefayman2003/Portfolio-Projects/tree/main/Data-Science/Automatidata/hypothesis_testing))
+
+In this stage, The purpose is to demostrate knowledge of how to prepare, create, and analyze A/B tests. My A/B test results should aim to find ways to generate more revenue for taxi cab drivers.
+
+### Approach
+
+1. Imports and data loading
+2. Conduct EDA and hypothesis testing
+3. Communicate insights with stakeholders
 4. Results and Evaluation

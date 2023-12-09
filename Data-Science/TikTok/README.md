@@ -8,6 +8,7 @@
   - [Project Proposal](#project_proposal)
   - [Understand The Data](#understand_the_data)
   - [Exploratory Data Analysis](#eda)
+  - [Hypothesis Testing](#stats)
 
 <a id="introduction"></a>
 
@@ -93,4 +94,16 @@ In this stage, I will conduct exploratory data analysis on data for the claims c
 1. Imports, links, and loading
 2. Data Exploration and Cleaning
 3. Data Visualization
+4. Results and Evaluation
+
+## Hypothesis Testing ([Click Here](https://github.com/yousefayman2003/Portfolio-Projects/tree/main/Data-Science/TikTok/hypothesis_testing))
+
+In this stage, The purpose is to demostrate knowledge of how to prepare, create, and analyze hypothesis tests and answer the research question:
+"is there a difference in number of views between TikTok videos posted by verified accounts and TikTok videos posted by unverified accounts"
+
+### Approach
+
+1. Imports and data loading
+2. Conduct EDA and hypothesis testing
+3. Communicate insights with stakeholders
 4. Results and Evaluation
