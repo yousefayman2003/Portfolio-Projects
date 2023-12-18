@@ -8,7 +8,8 @@
   - [Project Proposal](#project_proposal)
   - [Understand The Data](#understand_the_data)
   - [Exploratory Data Analysis](#eda)
-  - [Hypothesis Testing](#stats)
+  - [Hypothesis Testing](#hypothesis)
+  - [Statistical Analysis](#stats)
 
 <a id="introduction"></a>
 
@@ -109,7 +110,7 @@ In this stage, The purpose is to conduct exploratory data analysis on a provided
 3. Data Visualization
 4. Results and Evaluation
 
-<a id="stats"></a>
+<a id="hypothesis"></a>
 
 ## Hypothesis Testing ([Click Here](https://github.com/yousefayman2003/Portfolio-Projects/tree/main/Data-Science/Automatidata/hypothesis_testing))
 
@@ -121,3 +122,17 @@ In this stage, The purpose is to demostrate knowledge of how to prepare, create,
 2. Conduct EDA and hypothesis testing
 3. Communicate insights with stakeholders
 4. Results and Evaluation
+
+<a id="stats"></a>
+
+## Statistical Analysis ([Click Here](https://github.com/yousefayman2003/Portfolio-Projects/tree/main/Data-Science/Automatidata/statistical_analysis))
+
+In this stage, The goal is to build a multiple linear regression model that predicts the fare amount of the ride and evaluate the model
+
+### Approach
+
+**Part 1:** EDA & Checking Model Assumptions
+
+**Part 2:** Model Building and evaluation
+
+**Part 3:** Interpreting Model Results
