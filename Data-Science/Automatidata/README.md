@@ -9,7 +9,7 @@
   - [Understand The Data](#understand_the_data)
   - [Exploratory Data Analysis](#eda)
   - [Hypothesis Testing](#hypothesis)
-  - [Statistical Analysis](#stats)
+  - [Regression Analysis](#regression)
 
 <a id="introduction"></a>
 
@@ -123,9 +123,9 @@ In this stage, The purpose is to demostrate knowledge of how to prepare, create,
 3. Communicate insights with stakeholders
 4. Results and Evaluation
 
-<a id="stats"></a>
+<a id="regression"></a>
 
-## Statistical Analysis ([Click Here](https://github.com/yousefayman2003/Portfolio-Projects/tree/main/Data-Science/Automatidata/statistical_analysis))
+## Regression Analysis ([Click Here](https://github.com/yousefayman2003/Portfolio-Projects/tree/main/Data-Science/Automatidata/regression_analysis))
 
 In this stage, The goal is to build a multiple linear regression model that predicts the fare amount of the ride and evaluate the model
 

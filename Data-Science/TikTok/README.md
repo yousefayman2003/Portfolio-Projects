@@ -8,7 +8,8 @@
   - [Project Proposal](#project_proposal)
   - [Understand The Data](#understand_the_data)
   - [Exploratory Data Analysis](#eda)
-  - [Hypothesis Testing](#stats)
+  - [Hypothesis Testing](#hypothesis)
+  - [Regression Analysis](#regression)
 
 <a id="introduction"></a>
 
@@ -96,6 +97,8 @@ In this stage, I will conduct exploratory data analysis on data for the claims c
 3. Data Visualization
 4. Results and Evaluation
 
+<a id="hypothesis"></a>
+
 ## Hypothesis Testing ([Click Here](https://github.com/yousefayman2003/Portfolio-Projects/tree/main/Data-Science/TikTok/hypothesis_testing))
 
 In this stage, The purpose is to demostrate knowledge of how to prepare, create, and analyze hypothesis tests and answer the research question:
@@ -107,3 +110,17 @@ In this stage, The purpose is to demostrate knowledge of how to prepare, create,
 2. Conduct EDA and hypothesis testing
 3. Communicate insights with stakeholders
 4. Results and Evaluation
+
+<a id="regression"></a>
+
+## Regression Analysis ([Click Here](https://github.com/yousefayman2003/Portfolio-Projects/tree/main/Data-Science/Tiktok/regression_analysis))
+
+In this stage, The goal is to build a logistic regression model that predicts verified status and evaluate the model.
+
+### Approach
+
+**Part 1:** Data Preprocessing & Checking Model Assumptions
+
+**Part 2:** Model Building and evaluation
+
+**Part 3:** Interpreting Model Results
