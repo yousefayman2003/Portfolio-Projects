@@ -113,7 +113,7 @@ In this stage, The purpose is to demostrate knowledge of how to prepare, create,
 
 <a id="regression"></a>
 
-## Regression Analysis ([Click Here](https://github.com/yousefayman2003/Portfolio-Projects/tree/main/Data-Science/Tiktok/regression_analysis))
+## Regression Analysis ([Click Here](https://github.com/yousefayman2003/Portfolio-Projects/tree/main/Data-Science/TikTok/regression_analysis))
 
 In this stage, The goal is to build a logistic regression model that predicts verified status and evaluate the model.
 
