@@ -128,7 +128,7 @@ In this stage, The goal is to build a logistic regression model that predicts ve
 
 <a id="machine"></a>
 
-## Machine Learning ([Click Here](https://github.com/yousefayman2003/Portfolio-Projects/tree/main/Data-Science/Automatidata/machine_learning))
+## Machine Learning ([Click Here](https://github.com/yousefayman2003/Portfolio-Projects/tree/main/Data-Science/TikTok/machine_learning))
 
 In this stage, The goal is to build a model that predicts whether a TikTok video presents a "claim" or presents an "opinion".
 

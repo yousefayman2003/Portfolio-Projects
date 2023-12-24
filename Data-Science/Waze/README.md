@@ -138,7 +138,7 @@ In this stage, The goal is to build a binomial logistic regression model that pr
 
 **Part 3:** Interpreting Model Results
 
-## Machine Learning ([Click Here](https://github.com/yousefayman2003/Portfolio-Projects/tree/main/Data-Science/Automatidata/machine_learning))
+## Machine Learning ([Click Here](https://github.com/yousefayman2003/Portfolio-Projects/tree/main/Data-Science/Waze/machine_learning))
 
 In this stage, The goal is to build a model that predicts whether or not a Waze user is retained or churned.
 
