@@ -10,6 +10,7 @@
   - [Exploratory Data Analysis](#eda)
   - [Hypothesis Testing](#hypothesis)
   - [Regression Analysis](#regression)
+  - [Machine Learning](#machine)
 
 <a id="introduction"></a>
 
@@ -136,3 +137,15 @@ In this stage, The goal is to build a binomial logistic regression model that pr
 **Part 2:** Model Building and evaluation
 
 **Part 3:** Interpreting Model Results
+
+## Machine Learning ([Click Here](https://github.com/yousefayman2003/Portfolio-Projects/tree/main/Data-Science/Automatidata/machine_learning))
+
+In this stage, The goal is to build a model that predicts whether or not a Waze user is retained or churned.
+
+### Approach
+
+**Part 1:** Ethical considerations
+
+**Part 2:** Feature engineering
+
+**Part 3:** Building Models

@@ -10,6 +10,7 @@
   - [Exploratory Data Analysis](#eda)
   - [Hypothesis Testing](#hypothesis)
   - [Regression Analysis](#regression)
+  - [Machine Learning](#machine)
 
 <a id="introduction"></a>
 
@@ -127,7 +128,7 @@ In this stage, The purpose is to demostrate knowledge of how to prepare, create,
 
 ## Regression Analysis ([Click Here](https://github.com/yousefayman2003/Portfolio-Projects/tree/main/Data-Science/Automatidata/regression_analysis))
 
-In this stage, The goal is to build a multiple linear regression model that predicts the fare amount of the ride and evaluate the model
+In this stage, The goal is to build a multiple linear regression model that predicts the fare amount of the ride and evaluate the model.
 
 ### Approach
 
@@ -136,3 +137,17 @@ In this stage, The goal is to build a multiple linear regression model that pred
 **Part 2:** Model Building and evaluation
 
 **Part 3:** Interpreting Model Results
+
+<a id="machine"></a>
+
+## Machine Learning ([Click Here](https://github.com/yousefayman2003/Portfolio-Projects/tree/main/Data-Science/Automatidata/machine_learning))
+
+In this stage, The goal is to build a machine learning model to predict whether or not a customer is a generous tipper.
+
+### Approach
+
+**Part 1:** Ethical considerations
+
+**Part 2:** Feature engineering
+
+**Part 3:** Build & Evalute Models
